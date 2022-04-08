@@ -30,7 +30,7 @@ public class BoiteNoireTests {
     }
     
     @Test
-    void testFromAllCurrencyToAllCurrency() {
+    void testFromAllValidCurrencyToAllValidCurrency() {
     	for(int i = 0; i < currencies.size(); i ++) {
     		// Get current 'from' currency
     		Currency fromCurrency = currencies.get(i);
@@ -74,6 +74,33 @@ public class BoiteNoireTests {
     		Throwable thrown = assertThrows(NullPointerException.class, () -> MainWindow.convert(toCurrency.getName(), c.getName(), currencies, 1.0));
     		assertTrue(thrown.getMessage().contains("Cannot invoke \"java.lang.Double.doubleValue()\" because \"exchangeValue\" is null"));
 		}
+    }
+    
+    @Test
+    void testFromInvalidCurrencyToInvalidCurrency() {
+    	currencies.clear();
+    	
+    	Currency c = new Currency("invalidCurrency1", "inv1");
+    	currencies.add(c);
+    	
+    	Currency cc = new Currency("invalidCurrency2", "inv2");
+    	currencies.add(cc);
+		
+		// c -> c
+		Throwable thrown = assertThrows(NullPointerException.class, () -> MainWindow.convert(c.getName(), c.getName(), currencies, 1.0));
+		assertTrue(thrown.getMessage().contains("Cannot invoke \"java.lang.Double.doubleValue()\" because \"exchangeValue\" is null"));
+
+		// c -> cc
+		thrown = assertThrows(NullPointerException.class, () -> MainWindow.convert(c.getName(), cc.getName(), currencies, 1.0));
+		assertTrue(thrown.getMessage().contains("Cannot invoke \"java.lang.Double.doubleValue()\" because \"exchangeValue\" is null"));
+
+		// cc -> cc
+		thrown = assertThrows(NullPointerException.class, () -> MainWindow.convert(cc.getName(), cc.getName(), currencies, 1.0));
+		assertTrue(thrown.getMessage().contains("Cannot invoke \"java.lang.Double.doubleValue()\" because \"exchangeValue\" is null"));
+
+		// cc -> c
+		thrown = assertThrows(NullPointerException.class, () -> MainWindow.convert(cc.getName(), c.getName(), currencies, 1.0));
+		assertTrue(thrown.getMessage().contains("Cannot invoke \"java.lang.Double.doubleValue()\" because \"exchangeValue\" is null"));
     }
 
     @Test
